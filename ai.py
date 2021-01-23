@@ -5,6 +5,13 @@ from aip import AipSpeech
 import cv2
 from time import sleep
 from picamera import PiCamera
+from pytesseract import image_to_string
+
+def oci(filename="output.jpg"):
+    config = r'--tessdata-dir "./data/"'
+    text = image_to_string(filename, 'chi_sim', config=config).strip()
+    return text
+
 
 # 导入人脸模型数据
 face_cascade = cv2.CascadeClassifier("cv2models/haarcascade_frontalface_default.xml")
@@ -46,7 +53,6 @@ def face():
 def camera(filename="output.jpg"):
     camera = PiCamera()
     camera.resolution = (1024, 768)
-    sleep(2)
     camera.capture(filename)
     camera.close()
 
