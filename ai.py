@@ -7,6 +7,7 @@ from picamera import PiCamera
 from pytesseract import image_to_string
 import base64
 import uuid
+from voiceutils import *
 
 # 百度云语音API，请注册百度AI，换成自己的，否则可能不能正常使用哦
 VOICE_APP_ID = '23549160'
@@ -107,12 +108,20 @@ def people(filename):
 
 # 往百度云人脸识别库中增加一张人脸照片
 def add_people(image_str):
+    say("你好，以前没见过你，你能告诉我你叫什么名字吗？")
+    name = get_voice_text()
+    say("很高兴认识你，{}，现在请你稍等一下，我正在努力记住你".format(name))
     imageType = "BASE64"
     groupId = "1"
     userId = str(uuid.uuid4())
+    options = {}
+    options["user_info"] = name
+    #options["quality_control"] = "NORMAL"
+    #options["liveness_control"] = "LOW"
+    #options["action_type"] = "REPLACE"
 
     """ 调用人脸注册 """
-    face_client.addUser(image_str, imageType, groupId, userId)
+    face_client.addUser(image_str, imageType, groupId, userId, options)
 
 # 语音识别
 def asr(f="output.wav"):
@@ -127,13 +136,13 @@ def asr(f="output.wav"):
 
 
 # 语音合成
-def tts(s):
+def tts(s, filename="temp.mp3"):
     # per参数为发音人选择, 0为女声，1为男声，
     # 3为情感合成-度逍遥，4为情感合成-度丫丫，默认为普通女
     result = voice_client.synthesis(s, 'zh', 3, {'per': 4})
     # 识别正确返回语音二进制
     if not isinstance(result, dict):
-        with open("temp.mp3", "wb") as f:
+        with open(filename, "wb") as f:
             f.write(result)
             tmpfile = f.name
             return tmpfile
@@ -196,3 +205,14 @@ def video(filename="output.avi"):
     cap.release()
     # 关闭播放器
     cv2.destroyAllWindows()
+
+
+def say(word):
+    mp3 = tts(word)
+    playsound(mp3)
+
+
+def get_voice_text():
+    record()
+    text = asr()
+    return text
