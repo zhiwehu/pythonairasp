@@ -7,6 +7,7 @@ from time import sleep
 from picamera import PiCamera
 from pytesseract import image_to_string
 
+
 def oci(filename="output.jpg"):
     config = r'--tessdata-dir "./data/"'
     text = image_to_string(filename, 'chi_sim', config=config).strip()
@@ -15,6 +16,7 @@ def oci(filename="output.jpg"):
 
 # 导入人脸模型数据
 face_cascade = cv2.CascadeClassifier("cv2models/haarcascade_frontalface_default.xml")
+
 
 # 检测人脸的自定义函数
 def __detect_face(frame):
@@ -25,9 +27,10 @@ def __detect_face(frame):
     if len(faces) > 0:
         for (x, y, w, h) in faces:
             cv2.rectangle(frame, (x, y), ((x + w), (y + h)), (0, 0, 255), 2)
-    return frame
+    return len(faces), frame
 
-def face():
+
+def face(func=None):
     # 打开摄像头
     cap = cv2.VideoCapture(0)
 
@@ -36,7 +39,7 @@ def face():
         ret, frame = cap.read()
         if ret:
             # 检测人脸
-            __detect_face(frame)
+            faces, frame = __detect_face(frame)
             # 显示视频数据
             cv2.imshow("video", frame)
             # 让这一帧停留1毫秒，这时如果我们按下q键，就跳出这个循环停止播放
@@ -45,22 +48,33 @@ def face():
             if key == ord('q'):
                 break
 
+            if faces > 0 and func is not None:
+                break
+
     # 关闭摄像头
     cap.release()
     # 关闭播放器
     cv2.destroyAllWindows()
 
+    if func:
+        func()
+
+
+# 拍照
 def camera(filename="output.jpg"):
     camera = PiCamera()
     camera.resolution = (1024, 768)
     camera.capture(filename)
     camera.close()
+    return filename
+
 
 # 以下换成自己的百度云语音API KEY
 APP_ID = '23549160'
 API_KEY = 'MeyxezlB82jwihFtXT7Kdt7i'
 SECRET_KEY = 'BVeGYZ5DyP88IvquiNKm6kkW07m2Dhi8'
 client = AipSpeech(APP_ID, API_KEY, SECRET_KEY)
+
 
 # 语音识别
 def asr(f="output.wav"):
@@ -72,6 +86,7 @@ def asr(f="output.wav"):
         return ''.join(res['result'])
     else:
         return ''
+
 
 # 语音合成
 def tts(s):
@@ -86,7 +101,7 @@ def tts(s):
             return tmpfile
     else:
         return None
-    
+
 
 # 智能对话
 def chat(msg):
@@ -110,7 +125,7 @@ def chat(msg):
         return answer
     except Exception:
         return "抱歉, 我的大脑短路了，请稍后再试试."
-    
+
 
 def video(filename="output.avi"):
     # 打开摄像头
@@ -143,4 +158,3 @@ def video(filename="output.avi"):
     cap.release()
     # 关闭播放器
     cv2.destroyAllWindows()
-
