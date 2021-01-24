@@ -56,9 +56,9 @@ def face(quit_when_detect_face=False):
         ret, frame = cap.read()
         if ret:
             # 检测人脸
-            faces, frame = __detect_face(frame)
+            faces, newframe = __detect_face(frame)
             # 显示视频数据
-            cv2.imshow("video", frame)
+            cv2.imshow("video", newframe)
             # 让这一帧停留1毫秒，这时如果我们按下q键，就跳出这个循环停止播放
             # 如果不写cv2.waitKey()我们将看不到视频图像
             key = cv2.waitKey(1)
