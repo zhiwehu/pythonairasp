@@ -103,9 +103,12 @@ def people(filename):
 
     """ 带参数调用人脸搜索 """
     resp = face_client.search(image_str, imageType, groupIdList, options)
-
+    print(resp)
     if resp['error_code'] == 222207:
         add_people(image_str)
+    if resp['error_code'] == 0:
+        name = resp['result']['user_list'][0]['user_info']
+        say("{}，我们又见面啦！最近你都干什么去了呢？".format(name))
 
 # 往百度云人脸识别库中增加一张人脸照片
 def add_people(image_str):
@@ -125,6 +128,10 @@ def add_people(image_str):
     """ 调用人脸注册 """
     resp = face_client.addUser(image_str, imageType, groupId, userId, options)
     print(resp)
+    if resp['error_code'] == 0:
+        say("好的，我已经记住你了，下次见面我就能认识你了。")
+    else:
+        say("哦，出现了一点小错误，请重新启动程序再试试吧。")
 
 # 语音识别
 def asr(f="output.wav"):
