@@ -30,7 +30,7 @@ def __detect_face(frame):
     return len(faces), frame
 
 
-def face(func=None):
+def face(quit_when_detect_face=False):
     # 打开摄像头
     cap = cv2.VideoCapture(0)
 
@@ -48,16 +48,14 @@ def face(func=None):
             if key == ord('q'):
                 break
 
-            if faces > 0 and func is not None:
+            if faces > 0 and quit_when_detect_face:
+                cv2.imwrite("face.jpg", frame)
                 break
 
     # 关闭摄像头
     cap.release()
     # 关闭播放器
     cv2.destroyAllWindows()
-
-    if func:
-        func()
 
 
 # 拍照
