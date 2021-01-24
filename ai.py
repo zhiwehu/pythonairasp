@@ -106,11 +106,11 @@ def people(filename="face.jpg"):
     print(resp)
     if resp['error_code'] == 222207:
         # add_people(image_str)
-        return False
+        return None
     if resp['error_code'] == 0:
-        # name = resp['result']['user_list'][0]['user_info']
+        name = resp['result']['user_list'][0]['user_info']
         # say("{}，我们又见面啦！最近你都干什么去了呢？".format(name))
-        return True
+        return name
 
 
 # 往百度云人脸识别库中增加一张人脸照片
