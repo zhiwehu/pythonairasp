@@ -111,8 +111,8 @@ def people(filename):
 def add_people(image_str):
     say("你好，以前没见过你，你能告诉我你叫什么名字吗？")
     name = get_voice_text()
-    name = name.encode('utf-8').decode('latin1')
     say("很高兴认识你，{}，现在请你稍等一下，我正在努力记住你".format(name))
+    name = name.encode('utf-8').decode('latin1')
     imageType = "BASE64"
     groupId = "1"
     userId = str(uuid.uuid4())[:8]
