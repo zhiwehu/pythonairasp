@@ -1,4 +1,5 @@
-import wave
+# -*- coding: UTF-8 -*-
+
 import json
 import requests
 from aip import AipSpeech, AipFace
@@ -110,10 +111,11 @@ def people(filename):
 def add_people(image_str):
     say("你好，以前没见过你，你能告诉我你叫什么名字吗？")
     name = get_voice_text()
+    name = name.encode('utf-8').decode('latin1')
     say("很高兴认识你，{}，现在请你稍等一下，我正在努力记住你".format(name))
     imageType = "BASE64"
     groupId = "1"
-    userId = str(uuid.uuid4())
+    userId = str(uuid.uuid4())[:8]
     options = {}
     options["user_info"] = name
     #options["quality_control"] = "NORMAL"
@@ -121,7 +123,8 @@ def add_people(image_str):
     #options["action_type"] = "REPLACE"
 
     """ 调用人脸注册 """
-    face_client.addUser(image_str, imageType, groupId, userId, options)
+    resp = face_client.addUser(image_str, imageType, groupId, userId, options)
+    print(resp)
 
 # 语音识别
 def asr(f="output.wav"):
