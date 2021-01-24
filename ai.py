@@ -3,9 +3,9 @@ import json
 import requests
 from aip import AipSpeech
 import cv2
-from time import sleep
 from picamera import PiCamera
 from pytesseract import image_to_string
+import base64
 
 
 def oci(filename="output.jpg"):
@@ -65,6 +65,31 @@ def camera(filename="output.jpg"):
     camera.capture(filename)
     camera.close()
     return filename
+
+
+# 人脸识别
+def people(filename):
+    image_file = open(filename, "rb")
+    image = base64.b64encode(image_file.read())
+    image_file.close()
+
+    imageType = "BASE64"
+    groupIdList = "3,2"
+
+    """ 调用人脸搜索 """
+    client.search(image, imageType, groupIdList);
+
+    """ 如果有可选参数 """
+    options = {}
+    #options["max_face_num"] = 3
+    options["match_threshold"] = 70
+    #options["quality_control"] = "NORMAL"
+    #options["liveness_control"] = "LOW"
+    #options["user_id"] = "233451"
+
+    """ 带参数调用人脸搜索 """
+    resp = client.search(image, imageType, groupIdList, options)
+    print(resp)
 
 
 # 以下换成自己的百度云语音API KEY
