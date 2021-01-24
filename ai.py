@@ -6,6 +6,7 @@ import cv2
 from picamera import PiCamera
 from pytesseract import image_to_string
 import base64
+import uuid
 
 # 百度云语音API，请注册百度AI，换成自己的，否则可能不能正常使用哦
 VOICE_APP_ID = '23549160'
@@ -86,7 +87,6 @@ def camera(filename="output.jpg"):
 # 人脸识别
 def people(filename):
     image_str = get_base64_encoded_image(filename)
-    print(image_str)
 
     imageType = "BASE64"
     groupIdList = "1"
@@ -101,8 +101,18 @@ def people(filename):
 
     """ 带参数调用人脸搜索 """
     resp = face_client.search(image_str, imageType, groupIdList, options)
-    print(resp)
 
+    if resp['error_code'] == 222207:
+        add_people(image_str)
+
+# 往百度云人脸识别库中增加一张人脸照片
+def add_people(image_str):
+    imageType = "BASE64"
+    groupId = "1"
+    userId = str(uuid.uuid4())
+
+    """ 调用人脸注册 """
+    face_client.addUser(image_str, imageType, groupId, userId)
 
 # 语音识别
 def asr(f="output.wav"):
