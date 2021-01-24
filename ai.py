@@ -114,11 +114,8 @@ def people(filename="face.jpg"):
 
 
 # 往百度云人脸识别库中增加一张人脸照片
-def add_people(filename="face.jpg"):
+def add_people(name, filename="face.jpg"):
     image_str = get_base64_encoded_image(filename)
-    say("你好，以前没见过你，你能告诉我你叫什么名字吗？")
-    name = get_voice_text()
-    say("很高兴认识你，{}，现在请你稍等一下，我正在努力记住你".format(name))
     name = name.encode('utf-8').decode('latin1')
     imageType = "BASE64"
     groupId = "1"
@@ -130,9 +127,9 @@ def add_people(filename="face.jpg"):
     resp = face_client.addUser(image_str, imageType, groupId, userId, options)
     print(resp)
     if resp['error_code'] == 0:
-        say("好的，我已经记住你了，下次见面我就能认识你了。")
+        return True
     else:
-        say("哦，出现了一点小错误，请重新启动程序再试试吧。")
+        return False
 
 
 # 语音识别
