@@ -85,10 +85,10 @@ def people(filename):
     image_file.close()
 
     imageType = "BASE64"
-    groupIdList = "3,2"
+    groupIdList = "1"
 
     """ 调用人脸搜索 """
-    client.search(image, imageType, groupIdList);
+    face_client.search(image, imageType, groupIdList)
 
     """ 如果有可选参数 """
     options = {}
@@ -158,7 +158,7 @@ def video(filename="output.avi"):
     # 打开摄像头
     cap = cv2.VideoCapture(0)
 
-    # 设置30帧/秒，分辨率是1280x720，保存在当前目录下的output.avi文件
+    # 设置30帧/秒，分辨率是640x480，保存在当前目录下的output.avi文件
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(filename, fourcc, 30.0, (640, 480))
 
