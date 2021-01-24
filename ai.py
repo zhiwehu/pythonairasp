@@ -23,6 +23,11 @@ face_client = AipFace(FACE_APP_ID, FACE_API_KEY, FACE_SECRET_KEY)
 face_cascade = cv2.CascadeClassifier("cv2models/haarcascade_frontalface_default.xml")
 
 
+def get_base64_encoded_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode('utf-8')
+
+
 def oci(filename="output.jpg"):
     config = r'--tessdata-dir "./data/"'
     text = image_to_string(filename, 'chi_sim', config=config).strip()
@@ -80,15 +85,11 @@ def camera(filename="output.jpg"):
 
 # 人脸识别
 def people(filename):
-    image_file = open(filename, "rb")
-    image = base64.b64encode(image_file.read())
-    image_file.close()
+    image_str = get_base64_encoded_image(filename)
+    print(image_str)
 
     imageType = "BASE64"
     groupIdList = "1"
-
-    """ 调用人脸搜索 """
-    face_client.search(image, imageType, groupIdList)
 
     """ 如果有可选参数 """
     options = {}
@@ -99,7 +100,7 @@ def people(filename):
     # options["user_id"] = "233451"
 
     """ 带参数调用人脸搜索 """
-    resp = face_client.search(image, imageType, groupIdList, options)
+    resp = face_client.search(image_str, imageType, groupIdList, options)
     print(resp)
 
 
