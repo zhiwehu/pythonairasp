@@ -7,15 +7,20 @@ from picamera import PiCamera
 from pytesseract import image_to_string
 import base64
 
+# 以下换成自己的百度云语音API KEY
+APP_ID = '23549160'
+API_KEY = 'MeyxezlB82jwihFtXT7Kdt7i'
+SECRET_KEY = 'BVeGYZ5DyP88IvquiNKm6kkW07m2Dhi8'
+client = AipSpeech(APP_ID, API_KEY, SECRET_KEY)
+
+# 导入人脸模型数据
+face_cascade = cv2.CascadeClassifier("cv2models/haarcascade_frontalface_default.xml")
+
 
 def oci(filename="output.jpg"):
     config = r'--tessdata-dir "./data/"'
     text = image_to_string(filename, 'chi_sim', config=config).strip()
     return text
-
-
-# 导入人脸模型数据
-face_cascade = cv2.CascadeClassifier("cv2models/haarcascade_frontalface_default.xml")
 
 
 # 检测人脸的自定义函数
@@ -81,22 +86,15 @@ def people(filename):
 
     """ 如果有可选参数 """
     options = {}
-    #options["max_face_num"] = 3
+    # options["max_face_num"] = 3
     options["match_threshold"] = 70
-    #options["quality_control"] = "NORMAL"
-    #options["liveness_control"] = "LOW"
-    #options["user_id"] = "233451"
+    # options["quality_control"] = "NORMAL"
+    # options["liveness_control"] = "LOW"
+    # options["user_id"] = "233451"
 
     """ 带参数调用人脸搜索 """
     resp = client.search(image, imageType, groupIdList, options)
     print(resp)
-
-
-# 以下换成自己的百度云语音API KEY
-APP_ID = '23549160'
-API_KEY = 'MeyxezlB82jwihFtXT7Kdt7i'
-SECRET_KEY = 'BVeGYZ5DyP88IvquiNKm6kkW07m2Dhi8'
-client = AipSpeech(APP_ID, API_KEY, SECRET_KEY)
 
 
 # 语音识别
