@@ -1,17 +1,23 @@
 import wave
 import json
 import requests
-from aip import AipSpeech
+from aip import AipSpeech, AipFace
 import cv2
 from picamera import PiCamera
 from pytesseract import image_to_string
 import base64
 
-# 以下换成自己的百度云语音API KEY
-APP_ID = '23549160'
-API_KEY = 'MeyxezlB82jwihFtXT7Kdt7i'
-SECRET_KEY = 'BVeGYZ5DyP88IvquiNKm6kkW07m2Dhi8'
-client = AipSpeech(APP_ID, API_KEY, SECRET_KEY)
+# 百度云语音API，请注册百度AI，换成自己的，否则可能不能正常使用哦
+VOICE_APP_ID = '23549160'
+VOICE_API_KEY = 'MeyxezlB82jwihFtXT7Kdt7i'
+VOICE_SECRET_KEY = 'BVeGYZ5DyP88IvquiNKm6kkW07m2Dhi8'
+voice_client = AipSpeech(VOICE_APP_ID, VOICE_API_KEY, VOICE_SECRET_KEY)
+
+# 百度云人脸识别API，请注册百度AI，换成自己的，否则可能不能正常使用哦
+FACE_APP_ID = '23581750'
+FACE_API_KEY = 'ww7tyu9ix03GF89B6HcLXLVj'
+FACE_SECRET_KEY = 'CA4LOIEMWpLB6WzLUdEhi1TSo5KQ1DUS'
+face_client = AipFace(FACE_APP_ID, FACE_API_KEY, FACE_SECRET_KEY)
 
 # 导入人脸模型数据
 face_cascade = cv2.CascadeClassifier("cv2models/haarcascade_frontalface_default.xml")
@@ -93,14 +99,14 @@ def people(filename):
     # options["user_id"] = "233451"
 
     """ 带参数调用人脸搜索 """
-    resp = client.search(image, imageType, groupIdList, options)
+    resp = face_client.search(image, imageType, groupIdList, options)
     print(resp)
 
 
 # 语音识别
 def asr(f="output.wav"):
     wav = wave.open(f, 'rb')
-    res = client.asr(wav.readframes(wav.getnframes()), 'pcm', 16000, {
+    res = voice_client.asr(wav.readframes(wav.getnframes()), 'pcm', 16000, {
         'dev_pid': 1936,
     })
     if res['err_no'] == 0:
@@ -113,7 +119,7 @@ def asr(f="output.wav"):
 def tts(s):
     # per参数为发音人选择, 0为女声，1为男声，
     # 3为情感合成-度逍遥，4为情感合成-度丫丫，默认为普通女
-    result = client.synthesis(s, 'zh', 3, {'per': 4})
+    result = voice_client.synthesis(s, 'zh', 3, {'per': 4})
     # 识别正确返回语音二进制
     if not isinstance(result, dict):
         with open("temp.mp3", "wb") as f:
