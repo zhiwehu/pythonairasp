@@ -10,13 +10,16 @@ import base64
 import uuid
 from voiceutils import *
 
-# 百度云语音API，请注册百度AI，换成自己的，否则可能不能正常使用哦
+# 百度云语音API KEY，请注册百度AI云服务，换成自己的，否则可能不能正常使用哦
 VOICE_APP_ID = '23549160'
 VOICE_API_KEY = 'MeyxezlB82jwihFtXT7Kdt7i'
 VOICE_SECRET_KEY = 'BVeGYZ5DyP88IvquiNKm6kkW07m2Dhi8'
 voice_client = AipSpeech(VOICE_APP_ID, VOICE_API_KEY, VOICE_SECRET_KEY)
 
-# 百度云人脸识别API，请注册百度AI，换成自己的，否则可能不能正常使用哦
+# 图灵机器人API KEY，请注册自己的图灵机器人，否则可能不能正常使用哦。
+TULING_API_KEY = "98f95153fb5c4684a5602b909949ba61"
+
+# 百度云人脸识别API KEY，请注册百度AI云服务，换成自己的，否则可能不能正常使用哦
 FACE_APP_ID = '23581750'
 FACE_API_KEY = 'ww7tyu9ix03GF89B6HcLXLVj'
 FACE_SECRET_KEY = 'CA4LOIEMWpLB6WzLUdEhi1TSo5KQ1DUS'
@@ -46,6 +49,7 @@ def __detect_face(frame):
     if len(faces) > 0:
         for (x, y, w, h) in faces:
             cv2.rectangle(frame, (x, y), ((x + w), (y + h)), (0, 0, 255), 2)
+            print(x, y, w, h)
     return len(faces), frame
 
 
@@ -171,7 +175,7 @@ def chat(msg):
                 }
             },
             "userInfo": {
-                "apiKey": "98f95153fb5c4684a5602b909949ba61",
+                "apiKey": TULING_API_KEY,
                 "userId": "zhixinfuture"
             }
         }
